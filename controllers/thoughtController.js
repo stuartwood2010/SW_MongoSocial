@@ -1,4 +1,7 @@
-const { User, Thought } = require('../models');
+const {
+    User,
+    Thought
+} = require('../models');
 
 module.exports = {
     getAllThoughts: async (req, res) => {
@@ -10,7 +13,9 @@ module.exports = {
         }
     },
     getThoughtById: async (req, res) => {
-        const { thoughtId } = req.params;
+        const {
+            thoughtId
+        } = req.params;
         try {
             const thought = await Thought.findById(thoughtId);
             res.json(thought)
@@ -19,7 +24,11 @@ module.exports = {
         }
     },
     createThought: async (req, res) => {
-        const { thoughtText, username, userId } = req.body
+        const {
+            thoughtText,
+            username,
+            userId
+        } = req.body
         try {
             const newThought = await Thought.create({
                 thoughtText,
@@ -27,9 +36,14 @@ module.exports = {
                 userId
             });
             await User.findByIdAndUpdate(
-                userId,
-                { $push: { thoughts: newThought.id }},
-                { runValidators: true, new: true }
+                userId, {
+                    $push: {
+                        thoughts: newThought.id
+                    }
+                }, {
+                    runValidators: true,
+                    new: true
+                }
             );
             res.json(newThought);
         } catch (error) {
@@ -37,12 +51,17 @@ module.exports = {
         }
     },
     updateThoughtById: async (req, res) => {
-        const { thoughtId } = req.params
+        const {
+            thoughtId
+        } = req.params
         try {
             const updatedThought = await Thought.findByIdAndUpdate(
-                thoughtId,
-                {...req.body},
-                { new: true, runValidators: true }
+                thoughtId, {
+                    ...req.body
+                }, {
+                    new: true,
+                    runValidators: true
+                }
             );
             res.json(updatedThought)
         } catch (error) {
@@ -50,7 +69,9 @@ module.exports = {
         }
     },
     deleteThoughtById: async (req, res) => {
-        const { thoughtId } = req.params;
+        const {
+            thoughtId
+        } = req.params;
         try {
             const deletedThought = await Thought.findByIdAndDelete(thoughtId);
             res.json(deletedThought)
@@ -59,13 +80,20 @@ module.exports = {
         }
     },
     addReaction: async (req, res) => {
-        const { thoughtId } = req.params;
+        const {
+            thoughtId
+        } = req.params;
         const reaction = req.body;
         try {
             const updatedThought = await Thought.findByIdAndUpdate(
-                thoughtId,
-                { $push: { reactions: reaction }},
-                { runValidators: true, new: true }
+                thoughtId, {
+                    $push: {
+                        reactions: reaction
+                    }
+                }, {
+                    runValidators: true,
+                    new: true
+                }
             );
             res.json(updatedThought)
         } catch (error) {
@@ -73,18 +101,28 @@ module.exports = {
         }
     },
     deleteReaction: async (req, res) => {
-        const { thoughtId } = req.params;
-        const { reactionId } = req.body;
+        const {
+            thoughtId
+        } = req.params;
+        const {
+            reactionId
+        } = req.body;
         try {
             const updatedThought = await Thought.findByIdAndUpdate(
-                thoughtId,
-                { $pull: { reactions: { reactionId: reactionId } } },
-                { runValidators: true, new: true }
+                thoughtId, {
+                    $pull: {
+                        reactions: {
+                            reactionId: reactionId
+                        }
+                    }
+                }, {
+                    runValidators: true,
+                    new: true
+                }
             );
             res.json(updatedThought)
         } catch (error) {
             res.json(error)
         }
     }
-
 }
